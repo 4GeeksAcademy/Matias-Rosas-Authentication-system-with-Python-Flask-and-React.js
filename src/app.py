@@ -1,5 +1,21 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
+
+npm run start (en una terminal) este se abre en el frontend y es el 3000
+-3001 va  a estar el backend (que debemos convertir en publico)
+pipenv run start
+
+Esto es para generar el token 
+pipenv install flask-jwt-extended
+
+En el .env tambien podemos guardar el link del puerto 3001 
+
+BACKEND_URL = gitpod.. 
+
+La llave super secreta tenemos que guardarla en nuestro archivo .env tambien:
+
+JWT_KEY = "super-secret"
+
 """
 import os
 from flask import Flask, request, jsonify, url_for, send_from_directory
