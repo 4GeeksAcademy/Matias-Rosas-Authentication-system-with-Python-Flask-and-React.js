@@ -1,0 +1,112 @@
+import React, { useState } from "react";
+
+const Login = () => {
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar contraseña
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    fetch("https://bookish-robot-pj7qpgxxv4rvh9ppv-3001.app.github.dev/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: formData.email,
+        password: formData.password,
+      }),
+    })
+      .then((resp) => {
+        // Verificar si la respuesta tiene un error
+        console.log(resp.ok)
+        if (!resp.ok) {
+          if (resp.status === 400) {
+            setError("Invalid email or password.");
+          } else {
+            setError("There was a problem in the login request.");
+          }
+          setSuccess("");
+          return null
+        }
+        return resp.json(); // Convertir a JSON solo si no hubo error
+      })
+      .then((data) => {
+        console.log("LA DATA QUE VINO", data);
+        if (!data){
+          return;
+        }
+        localStorage.setItem("jwt-token", data.token);
+        setError("");
+        setSuccess("Login successful!");
+      })
+      .catch((error) => {
+        console.error("Error:", error.message);
+      });
+  };
+
+  return (
+    <div className="container mt-5">
+      <div className="row justify-content-center">
+        <div className="col-md-4">
+          <div className="card shadow-sm">
+            <div className="card-body">
+              <h2 className="card-title text-center mb-4">Login</h2>
+              <form onSubmit={handleSubmit}>
+                <div className="mb-3">
+                  <label htmlFor="email" className="form-label">
+                    Email:
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    className="form-control"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="password" className="form-label">
+                    Password:
+                  </label>
+                  <div className="input-group">
+                    <input
+                      type={showPassword ? "text" : "password"} // Alternar entre texto y contraseña
+                      id="password"
+                      name="password"
+                      className="form-control"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      required
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? "Hide" : "Show"}
+                    </button>
+                  </div>
+                </div>
+                <button type="submit" className="btn btn-primary w-100">
+                  Login
+                </button>
+              </form>
+              {error && <div className="alert alert-danger mt-3">{error}</div>}
+              {success && <div className="alert alert-success mt-3">{success}</div>}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Login;
