@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState } from 'react'
 
-const Login = () => {
+const Signup = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
@@ -14,12 +14,13 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    fetch("https://bookish-robot-pj7qpgxxv4rvh9ppv-3001.app.github.dev/login", {
+    fetch("https://bookish-robot-pj7qpgxxv4rvh9ppv-3001.app.github.dev/user", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         email: formData.email,
         password: formData.password,
+        is_active: true
       }),
     })
       .then((resp) => {
@@ -28,7 +29,7 @@ const Login = () => {
           if (resp.status === 400) {
             setError("Invalid email or password.");
           } else {
-            setError("There was a problem in the login request.");
+            setError("There was a problem with the Registration request.");
           }
           setSuccess("");
           return null
@@ -42,7 +43,8 @@ const Login = () => {
         }
         localStorage.setItem("jwt-token", data.token);
         setError("");
-        setSuccess("Login successful!");
+        setSuccess("Registration successful!");
+        
       })
       .catch((error) => {
         console.error("Error:", error.message);
@@ -55,11 +57,11 @@ const Login = () => {
         <div className="col-md-4">
           <div className="card shadow-sm">
             <div className="card-body">
-              <h2 className="card-title text-center mb-4">Login</h2>
+              <h2 className="card-title text-center mb-4">Register</h2>
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <label htmlFor="email" className="form-label">
-                    Email:
+                    Set an Email:
                   </label>
                   <input
                     type="email"
@@ -73,7 +75,7 @@ const Login = () => {
                 </div>
                 <div className="mb-3">
                   <label htmlFor="password" className="form-label">
-                    Password:
+                  Set a Password:
                   </label>
                   <div className="input-group">
                     <input
@@ -95,7 +97,7 @@ const Login = () => {
                   </div>
                 </div>
                 <button type="submit" className="btn btn-primary w-100">
-                  Login
+                  Register
                 </button>
               </form>
               {error && <div className="alert alert-danger mt-3">{error}</div>}
@@ -105,7 +107,7 @@ const Login = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Login;
+export default Signup

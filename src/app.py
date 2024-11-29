@@ -92,6 +92,31 @@ def serve_any_other_file(path):
     response = send_from_directory(static_file_dir, path)
     response.cache_control.max_age = 0  # avoid cache memory
     return response
+
+
+# Post: nuevo usuario
+@app.route('/user', methods=['POST'])
+def create_user():
+    body = request.get_json(silent=True)
+    if body is None: 
+        return jsonify({'msg': 'El cuerpo de la solicitud está vacío'}), 400
+    if 'email' not in body: 
+        return jsonify({'msg': "El campo 'email' es obligatorio"}), 400
+    if 'password' not in body:
+        return jsonify({'msg': "El campo 'password' es obligatiro"}), 400
+    # if 'is_active' not in body:
+    #     return jsonify({"msg": "El campo 'is_active' es obligatorio"}), 400
+
+    new_user = User(
+        email = body['email'],
+        password= body['password'],
+        is_active=body['is_active']
+    )
+    db.session.add(new_user)
+    db.session.commit()
+    return jsonify({'msg':'Usuario creado exitosamente', 'data': new_user.serialize()}), 201
+
+
 #LOGIN: 
 @app.route('/login', methods=['POST'])
 def login():
