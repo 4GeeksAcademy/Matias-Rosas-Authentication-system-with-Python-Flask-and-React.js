@@ -142,7 +142,9 @@ def login():
 def private():
     current_user = get_jwt_identity()
     print('Este es el usuario que esta haciendo la peticion: ', current_user)
-    return jsonify({'msg': 'Bienvenido', 'Este es el usuario que esta haciendo la peticion: ': current_user})
+    if current_user:
+        return jsonify({'msg': 'Bienvenido', 'Este es el usuario que esta haciendo la peticion: ': current_user})
+    return jsonify({'msg': 'You SHAL NOT PASS!'}), 400
     
 
 # this only runs if `$ python src/main.py` is executed

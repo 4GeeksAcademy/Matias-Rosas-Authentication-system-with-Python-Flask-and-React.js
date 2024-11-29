@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
+import { useParams, useNavigate } from 'react-router-dom';
 
 const Signup = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
@@ -44,7 +46,7 @@ const Signup = () => {
         localStorage.setItem("jwt-token", data.token);
         setError("");
         setSuccess("Registration successful!");
-        
+        navigate("/Home")
       })
       .catch((error) => {
         console.error("Error:", error.message);

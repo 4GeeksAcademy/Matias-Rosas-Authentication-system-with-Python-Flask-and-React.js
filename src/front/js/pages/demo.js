@@ -5,35 +5,59 @@ import { Context } from "../store/appContext";
 
 export const Demo = () => {
 	const { store, actions } = useContext(Context);
+	const [error, setError] = useState("");
+  	const [success, setSuccess] = useState("");
 
+	const CheckToken = () => {
+		const token = localStorage.getItem('jwt-token')
+		console.log("El token: ",token)
+		fetch("https://bookish-robot-pj7qpgxxv4rvh9ppv-3001.app.github.dev/private", {
+			method: 'GET',
+			headers: {
+				"Content-Type": "application/json",
+				'Authorization': `Bearer ${token}`
+			}
+		})
+			.then((resp)=>{
+				console.log(resp.ok)
+				console.log(resp.status)
+				console.log(resp.body)
+				if (!resp.ok) {
+				  if (resp.status === 400) {
+					setError("Invalid access");
+				  } else {
+					setError("You shall not pass");
+				  }
+				  setSuccess("");
+				  return null
+				}
+				return resp.json(); // Convertir a JSON solo si no hubo error
+			})
+			.then((data)=> {
+				console.log("La data que vino: ", data)
+				if (!data){
+					return;
+				}
+				setError("");
+        		setSuccess("You can access");
+			})
+			.catch((error) => {
+				console.error("Error:", error.message);
+			  });
+	}
+
+
+	useEffect(() => {
+        CheckToken()
+    }, []);
+	
 	return (
 		<div className="container">
-			<ul className="list-group">
-				{store.demo.map((item, index) => {
-					return (
-						<li
-							key={index}
-							className="list-group-item d-flex justify-content-between"
-							style={{ background: item.background }}>
-							<Link to={"/single/" + index}>
-								<span>Link to: {item.title}</span>
-							</Link>
-							{// Conditional render example
-							// Check to see if the background is orange, if so, display the message
-							item.background === "orange" ? (
-								<p style={{ color: item.initial }}>
-									Check store/flux.js scroll to the actions to see the code
-								</p>
-							) : null}
-							<button className="btn btn-success" onClick={() => actions.changeColor(index, "orange")}>
-								Change Color
-							</button>
-						</li>
-					);
-				})}
-			</ul>
+			<h1>Esta es una pagina privada 🔒</h1>
+			{error && <div className="alert alert-danger mt-3">{error}</div>}
+			{success && <div className="alert alert-success mt-3">{success}</div>}
 			<br />
-			<Link to="/">
+			<Link to="/Home">
 				<button className="btn btn-primary">Back home</button>
 			</Link>
 		</div>
