@@ -11,7 +11,7 @@ export const Demo = () => {
 	const CheckToken = () => {
 		const token = localStorage.getItem('jwt-token')
 		console.log("El token: ",token)
-		fetch("https://bookish-robot-pj7qpgxxv4rvh9ppv-3001.app.github.dev/private", {
+		fetch(`${process.env.BACKEND_URL}/private`, {
 			method: 'GET',
 			headers: {
 				"Content-Type": "application/json",

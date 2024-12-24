@@ -16,7 +16,7 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    fetch("https://bookish-robot-pj7qpgxxv4rvh9ppv-3001.app.github.dev/login", {
+    fetch(`${process.env.BACKEND_URL}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
